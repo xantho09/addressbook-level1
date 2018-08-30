@@ -1168,6 +1168,7 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
 
+    /** Returns the string for showing 'history' command usage instruction. */
     private static String getUsageInfoForHistoryCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_HISTORY_WORD, COMMAND_HISTORY_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HISTORY_EXAMPLE) + LS;
