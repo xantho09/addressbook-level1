@@ -67,6 +67,7 @@ public class AddressBook {
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
+    private static final String MESSAGE_HISTORY_DISPLAYED = "Entire command history displayed.";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
@@ -133,6 +134,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
+    private static final String COMMAND_HISTORY_WORD = "history";
+    private static final String COMMAND_HISTORY_DESC = "Shows a list of all commands entered within this session.";
+    private static final String COMMAND_HISTORY_EXAMPLE = COMMAND_HISTORY_WORD;
+
     private static final String DIVIDER = "===================================================";
 
 
@@ -195,6 +200,11 @@ public class AddressBook {
      */
     private static String storageFilePath;
 
+    /**
+     * An ArrayList containing all the past commands.
+     */
+    private static ArrayList<String> pastCommands = new ArrayList<>();
+
     /*
      * NOTE : =============================================================
      * Notice how this method solves the whole problem at a very high level.
@@ -215,6 +225,7 @@ public class AddressBook {
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
+            saveUserCommand(userCommand);
         }
     }
 
@@ -247,6 +258,16 @@ public class AddressBook {
      */
     private static void echoUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
+    }
+
+    /**
+     * Saves the specified user command in the list of past commands.
+     *
+     * @param userCommand the command to be saved
+     */
+    private static void saveUserCommand(String userCommand) {
+        String formattedCommand = (pastCommands.size() + 1) + ") " + userCommand;
+        pastCommands.add(formattedCommand);
     }
 
     /**
@@ -381,6 +402,8 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        case COMMAND_HISTORY_WORD:
+            return executeShowHistory();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -584,6 +607,14 @@ public class AddressBook {
      */
     private static void executeExitProgramRequest() {
         exitProgram();
+    }
+
+    /**
+     * Prints a list of all commands during this session.
+     */
+    private static String executeShowHistory() {
+        showToUser(pastCommands.toArray(new String[0]));
+        return MESSAGE_HISTORY_DISPLAYED;
     }
 
     /*
@@ -1087,6 +1118,7 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForHistoryCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
@@ -1126,14 +1158,19 @@ public class AddressBook {
 
     /** Returns string for showing 'help' command usage instruction */
     private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'exit' command usage instruction */
     private static String getUsageInfoForExitCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+    }
+
+    private static String getUsageInfoForHistoryCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HISTORY_WORD, COMMAND_HISTORY_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HISTORY_EXAMPLE) + LS;
     }
 
 
